@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
 
 public class GetNewWord {
 	public static void main(String[] args) {
-		Word word = getWord("");
+		Word word = getWord("Concubine");
 		System.out.println("yay "+ word.getName()  + word.getDefinition());
 
 	}
@@ -68,9 +68,9 @@ public class GetNewWord {
 				 if (node.getNodeType() == Node.ELEMENT_NODE) {
 					 Element elem = (Element) node;
 					 String definition = elem.getElementsByTagName("dt").item(0).getChildNodes().item(0).getNodeValue();
-					 String example = elem.getElementsByTagName("dt").item(1).getChildNodes().item(0).getNodeValue();
 					 System.out.println(definition);
 					 if(i==1){
+						 System.out.println("Hello");
 						 word.setDefinition(definition);
 					 }
 				 }
