@@ -2,102 +2,149 @@
 <html>
 
 <head>
-  <title>This is Arnold</title>
+<title>This is Arnold</title>
 
-  <!— Bootstrap Theme —>
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<!— Bootstrap Theme —>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
-  <!— AngularJS —>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<!— AngularJS —>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
 
-  <!— Firebase —>
-  <script src="https://cdn.firebase.com/js/client/2.4.0/firebase.js"></script>
+<!— Firebase —>
+<script src="https://cdn.firebase.com/js/client/2.4.0/firebase.js"></script>
 
-  <!— AngularFire —>
-  <script src="https://cdn.firebase.com/libs/angularfire/1.1.4/angularfire.min.js"></script>
+<!— AngularFire —>
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.4/angularfire.min.js"></script>
 
-  <!— Google Platform Library —>
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <meta name="google-signin-client_id" content="404863211420-685al1h5pql2opklg2oc0a3fnjgere33.apps.googleusercontent.com">
+<!— Google Platform Library —>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<meta name="google-signin-client_id" content="404863211420-685al1h5pql2opklg2oc0a3fnjgere33.apps.googleusercontent.com">
 
 </head>
 
 <body class='container' ng-app="myApp" ng-controller="ctrl">
 
-  <h1>Gaming centre</h1>
+	<h1>Gaming centre</h1>
 
-  <br>
-  <div ng-hide='false'>
-    <input name='name' type='text' placeholder='Your name' ng-model='input'>
-    <button ng-click='login(input)' class='btn btn-primary'>Login</button>
-  </div>
+	<br>
+	<div ng-hide='false'>
+		<input name='name' type='text' placeholder='Your name' ng-model='input'>
+		<button ng-click='login(input)' class='btn btn-primary'>Login</button>
+	</div>
 
 
-  <br><br>
+	<br>
+	<br>
 
-  <div ng-show='username'>
-    <p>Welcome {{username}}</p>
+	<div ng-show='username'>
+		<p>Welcome {{username}}</p>
 
-    <hr>
+		<hr>
 
-    Definition: {{definition}}
-    <br>
-    <div ng-show='result'>Word: {{word}}</div>
+		Definition: {{definition}}
+		<br>
 
-    <form ng-hide='result'>
-      <input type='text' name='name' ng-model='myInput' placeholder='Your answer'>
-      <input type='submit' value='Submit' class='btn btn-primary' ng-click="go(myInput)">
+		<div ng-show='result'>
+			Your Word: {{myInput}}
+			<br>
+			Your points: {{myPoints}}
+			<br>
+			Word: {{word}}
+			<br>
+			<button ng-click='reset()'>Reset</button>
+		</div>
 
-    </form>
-    {{result}}
+		<form ng-hide='result'>
+			<input type='text' name='name' ng-model='myInput' placeholder='Your answer' ng-disabled="definition == null">
+			<input type='submit' value='Submit' class='btn btn-primary' ng-click="go(myInput)" ng-disabled="definition == null">
 
-    <br><br><br><br>
+		</form>
+		{{result}}
 
-  </div>
+		<br>
+		<br>
+		<br>
+		<br>
 
-  <script>
+	</div>
+
+	<script>
   var app = angular.module('myApp', ['firebase']);
 
   app.controller('ctrl', ['$scope', '$http', '$firebaseArray', '$firebaseObject', function($scope, $http, $firebaseArray, $firebaseObject) {
-    
+
     var ref = new Firebase("https://cloudfinal.firebaseio.com");
     var userRef = ref.child("users");
     
     $scope.users = $firebaseArray(userRef);
     $scope.username = "";
-    
-    $http.get("/cloud_final/getWordServlet").then(function successCallback(response){
-      console.log(response);
-      $scope.word = response.data.wordName;
-      $scope.definition = response.data.definition;
-    })
+
+    var retrieve = function(){
+      $http.get("/cloud_final/getWordServlet").then(function successCallback(response){
+        console.log(response);
+        $scope.word = response.data.wordName;
+        $scope.definition = response.data.definition;
+      }
+      );
+    };    
+
+    retrieve();
+
+
     
     $scope.login = function(input){
       $scope.username = input;
-      var o = new $firebaseObject(userRef.child(input));
-      o.$value = 0;
-      o.$save();
-    }
+      var o = $firebaseObject(userRef.child(input));
+      o.$loaded().then(function(){
+        console.log("o: " + o);
+      if(o.$value === null){
+        o = new $firebaseObject(userRef.child(input));
+       o.$value = 0;
+       o.$save();
+     }
+      })
+      
+   };
 
-    $scope.go = function(thisword) {
-      if(thisword === $scope.word){
-        $scope.result = "That is correct!";
-      }else{
-        $scope.result = "Wah you stupid.";
-      }
-    };
+   $scope.reset = function(){
+     $scope.result = null;
+     $scope.definition = null;
+     retrieve();
+   };
 
-    $scope.delete = function(d) {
-      $scope.data.$remove(d);
-    };
+   $scope.go = function(userWord) {
+     console.log($scope.username);
+     var o = $firebaseObject(userRef.child($scope.username));
+     console.log("obj: " + o);
+     if(userWord.toLowerCase() === $scope.word.toLowerCase()){
+      o.$loaded().then(function(){
+       console.log(o.$value);  
+       o.$value += 5;
+       o.$save();
+       $scope.myPoints = o.$value;
+     });
+      $scope.result = "That is correct!";
+    }else{
+     o.$loaded().then(function(){
+       console.log(o.$value);  
+       o.$value -= 5;
+       o.$save();
+       $scope.myPoints = o.$value;
+     });
+     $scope.result = "Wah you stupid.";
+     $scope.myInput = "";
+   }
+ };
 
-    
-
-  }])
-
-  </script>
+ $scope.delete = function(d) {
+  $scope.data.$remove(d);
+};
 
 
+
+}])
+
+</script>
 </body>
 
 </html>

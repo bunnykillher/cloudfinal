@@ -18,12 +18,12 @@ public class ConnectToFireBase {
 	static Firebase ref;
 	static String s1;
 	static Word word;
-	
-	public Word getWord(){
+
+	public Word getWord() {
 		return word;
 	}
-	
-	public static void run(){
+
+	public static void run() {
 		System.out.println("hello");
 		System.out.println("arnold");
 
@@ -51,6 +51,7 @@ public class ConnectToFireBase {
 
 		System.out.println("done");
 	}
+
 	public static void main(String[] args) {
 
 		System.out.println("hello");
@@ -81,45 +82,41 @@ public class ConnectToFireBase {
 		System.out.println("done");
 
 	}
-	
-	public static Word returnResult(Word word){
+
+	public static Word returnResult(Word word) {
 		return word;
 	}
-	
+
 	public static Word runMyStuff() {
-//		ref.child("piggy").setValue("hello from eclipse");
-//		ref.child("chris").setValue("chris sucks");
-//		ref.child("arnold").setValue("sucks too");
+		// ref.child("piggy").setValue("hello from eclipse");
+		// ref.child("chris").setValue("chris sucks");
+		// ref.child("arnold").setValue("sucks too");
 
 		Query q = ref.child("/words");
-		
+
 		Word words = new Word();
-		GetNewWord getNewWord = new GetNewWord();
-		
+		final GetNewWord getNewWord = new GetNewWord();
+
 		q.addValueEventListener(new ValueEventListener() {
-		
-		
+
 			@Override
 			public void onDataChange(DataSnapshot arg0) {
 				// TODO Auto-generated method stub
 				System.out.println(arg0.getValue());
-				ArrayList<String >stringValues = (ArrayList<String>)arg0.getValue();
+				ArrayList<String> stringValues = (ArrayList<String>) arg0.getValue();
 				Random rand = new Random();
-				s1 = stringValues.get(rand.nextInt(stringValues.size()-1)+1);
+				s1 = stringValues.get(rand.nextInt(stringValues.size() - 1) + 1);
 				word = getNewWord.getWordDef(s1);
 			}
-
+			
 			@Override
 			public void onCancelled(FirebaseError arg0) {
 				// TODO Auto-generated method stub
-
 			}
-			
+
 		});
 		return words;
-		
 
-		
 	}
 
 }
