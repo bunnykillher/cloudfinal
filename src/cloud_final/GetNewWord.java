@@ -1,40 +1,39 @@
 package cloud_final;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
-import com.google.common.escape.Escaper;
-import com.google.common.net.UrlEscapers;
 
-import jdk.internal.org.xml.sax.InputSource;
-import jdk.internal.org.xml.sax.XMLReader;
+
+
+
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
+
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.apache.http.client.utils.URIBuilder;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
+
 
 public class GetNewWord {
 	public static void main(String[] args) {
-		Word word = getWord("talk");
+		Word word = getWord("");
 		System.out.println("yay "+ word.getName()  + word.getDefinition());
 
 	}
-
+	
+	public Word getWordDef(String word){
+		Word returnWord = getWord(word);
+		return returnWord;
+	}
 	public static Word getWord(String input) {
 		// the SAX way:
 		// try{
