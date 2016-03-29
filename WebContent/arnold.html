@@ -27,7 +27,7 @@
 	<h1>Gaming centre</h1>
 
 	<br>
-	<div ng-hide='false'>
+	<div ng-hide='username'>
 		<input name='name' type='text' placeholder='Your name' ng-model='input'>
 		<button ng-click='login(input)' class='btn btn-primary'>Login</button>
 	</div>
@@ -38,6 +38,11 @@
 
 	<div ng-show='username'>
 		<p>Welcome {{username}}</p>
+		<p>Your points: {{user.$value}}</p>
+
+		<hr>
+
+		Monster health: {{monster.$value}}
 
 		<hr>
 
@@ -47,7 +52,7 @@
 		<div ng-show='result'>
 			Your Word: {{myInput}}
 			<br>
-			Your points: {{myPoints}}
+			Your points: {{user.$value}}
 			<br>
 			Word: {{word}}
 			<br>
@@ -68,16 +73,30 @@
 
 	</div>
 
-	<script>
+	<script type="text/javascript">
   var app = angular.module('myApp', ['firebase']);
 
   app.controller('ctrl', ['$scope', '$http', '$firebaseArray', '$firebaseObject', function($scope, $http, $firebaseArray, $firebaseObject) {
 
     var ref = new Firebase("https://cloudfinal.firebaseio.com");
     var userRef = ref.child("users");
+    var monsterRef = ref.child("monster");
     
-    $scope.users = $firebaseArray(userRef);
+    var monster = $firebaseObject(monsterRef);
+    var users = $firebaseArray(userRef);
     $scope.username = "";
+    
+    
+
+    monster.$loaded().then(function(){
+      console.log(monster);
+      monster.$bindTo($scope, "monster").then(function(){
+    	  console.log($scope.monster);
+    	  $scope.monsterHealth = $scope.monster.$value;
+      });
+    });
+    
+
 
     var retrieve = function(){
       $http.get("/cloud_final/getWordServlet").then(function successCallback(response){
@@ -90,19 +109,21 @@
 
     retrieve();
 
-
     
     $scope.login = function(input){
       $scope.username = input;
       var o = $firebaseObject(userRef.child(input));
       o.$loaded().then(function(){
-        console.log("o: " + o);
       if(o.$value === null){
-        o = new $firebaseObject(userRef.child(input));
+       o = new $firebaseObject(userRef.child(input));
        o.$value = 0;
        o.$save();
      }
+      o.$bindTo($scope, "user").then(function(){
+    	  console.log($scope.user);
+    	  console.log($scope.user.$value);
       })
+      });
       
    };
 
@@ -122,6 +143,8 @@
        o.$value += 5;
        o.$save();
        $scope.myPoints = o.$value;
+       monster.$value -= 5;
+       monster.$save();
      });
       $scope.result = "That is correct!";
     }else{
@@ -132,8 +155,8 @@
        $scope.myPoints = o.$value;
      });
      $scope.result = "Wah you stupid.";
-     $scope.myInput = "";
    }
+   $scope.myInput = "";
  };
 
  $scope.delete = function(d) {
