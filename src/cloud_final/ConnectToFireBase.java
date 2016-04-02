@@ -24,34 +24,34 @@ public class ConnectToFireBase {
 		return word;
 	}
 
-	// public static void run() {
-	// System.out.println("hello");
-	// System.out.println("arnold");
-	//
-	// ref = new Firebase("https://cloudfinal.firebaseio.com");
-	// ref.authWithPassword("arnold.lee.wt@gmail.com", "1234567", new AuthResultHandler() {
-	//
-	// @Override
-	// public void onAuthenticationError(FirebaseError arg0) {
-	// System.out.println(arg0);
-	// }
-	//
-	// @Override
-	// public void onAuthenticated(AuthData arg0) {
-	// System.out.println("authenticated");
-	// runMyStuff();
-	//
-	// }
-	// });
-	//
-	// try {
-	// Thread.sleep(5000);
-	// } catch (InterruptedException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// System.out.println("done");
-	// }
+	public static void run() {
+		System.out.println("hello");
+		System.out.println("arnold");
+
+		ref = new Firebase("https://cloudfinal.firebaseio.com");
+		ref.authWithPassword("arnold.lee.wt@gmail.com", "1234567", new AuthResultHandler() {
+
+			@Override
+			public void onAuthenticationError(FirebaseError arg0) {
+				System.out.println(arg0);
+			}
+
+			@Override
+			public void onAuthenticated(AuthData arg0) {
+				System.out.println("authenticated");
+				runMyStuff();
+
+			}
+		});
+
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("done");
+	}
 
 	public static void main(String[] args) {
 
