@@ -66,6 +66,8 @@
 		</form>
 		{{result}}
 
+		<button ng-click='spam()'>Spam</button>
+
 		<br>
 		<br>
 		<br>
@@ -96,6 +98,7 @@
       });
     });
     
+    
 
 
     var retrieve = function(){
@@ -106,6 +109,13 @@
       }
       );
     };    
+    
+    $scope.spam = function(){
+    	for(int i = 0; i < 10; i++){
+    		retrieve();
+    		console.log(i);
+    	}
+    };
 
     retrieve();
 
@@ -154,6 +164,15 @@
        o.$save();
        $scope.myPoints = o.$value;
      });
+     $http({
+    	 method:'POST',
+    	 url:'/cloud_final/AddWrongWordServlet',
+    	 data:{
+    		 word: userWord
+    	 }
+     }).then(function successCallback(){
+    	 console.log("done");
+     })
      $scope.result = "Wah you stupid.";
    }
    $scope.myInput = "";
