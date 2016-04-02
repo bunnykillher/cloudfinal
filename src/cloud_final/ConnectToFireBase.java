@@ -1,9 +1,10 @@
 package cloud_final;
 
-import com.firebase.client.Firebase;
-
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import javax.annotation.processing.Completion;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
@@ -23,34 +24,34 @@ public class ConnectToFireBase {
 		return word;
 	}
 
-	public static void run() {
-		System.out.println("hello");
-		System.out.println("arnold");
-
-		ref = new Firebase("https://cloudfinal.firebaseio.com");
-		ref.authWithPassword("arnold.lee.wt@gmail.com", "1234567", new AuthResultHandler() {
-
-			@Override
-			public void onAuthenticationError(FirebaseError arg0) {
-				System.out.println(arg0);
-			}
-
-			@Override
-			public void onAuthenticated(AuthData arg0) {
-				System.out.println("authenticated");
-				runMyStuff();
-
-			}
-		});
-
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		System.out.println("done");
-	}
+	// public static void run() {
+	// System.out.println("hello");
+	// System.out.println("arnold");
+	//
+	// ref = new Firebase("https://cloudfinal.firebaseio.com");
+	// ref.authWithPassword("arnold.lee.wt@gmail.com", "1234567", new AuthResultHandler() {
+	//
+	// @Override
+	// public void onAuthenticationError(FirebaseError arg0) {
+	// System.out.println(arg0);
+	// }
+	//
+	// @Override
+	// public void onAuthenticated(AuthData arg0) {
+	// System.out.println("authenticated");
+	// runMyStuff();
+	//
+	// }
+	// });
+	//
+	// try {
+	// Thread.sleep(5000);
+	// } catch (InterruptedException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// System.out.println("done");
+	// }
 
 	public static void main(String[] args) {
 
@@ -69,7 +70,6 @@ public class ConnectToFireBase {
 			public void onAuthenticated(AuthData arg0) {
 				System.out.println("authenticated");
 				runMyStuff();
-
 			}
 		});
 
@@ -88,9 +88,18 @@ public class ConnectToFireBase {
 	}
 
 	public static Word runMyStuff() {
-		// ref.child("piggy").setValue("hello from eclipse");
+		
+		// TODO: THE CODE THAT YOU NEED HERE.......
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("angelia", "24");
+		map.put("lx", "25");
+
+		ref.child("piggy").setValue("hello from eclipse");
 		// ref.child("chris").setValue("chris sucks");
 		// ref.child("arnold").setValue("sucks too");
+
+		ref.child("ages").updateChildren(map);
+		// TODO: THE CODE THAT YOU NEED UNTIL HERE.......
 
 		Query q = ref.child("/words");
 
@@ -108,7 +117,7 @@ public class ConnectToFireBase {
 				s1 = stringValues.get(rand.nextInt(stringValues.size() - 1) + 1);
 				word = getNewWord.getWordDef(s1);
 			}
-			
+
 			@Override
 			public void onCancelled(FirebaseError arg0) {
 				// TODO Auto-generated method stub

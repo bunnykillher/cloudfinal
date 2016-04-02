@@ -14,5 +14,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="D:/My Code Projects/cloudfinal/WebContent/WEB-INF/lib/firebase-client-jvm-2.5.2.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
