@@ -24,34 +24,34 @@ public class ConnectToFireBase {
 		return word;
 	}
 
-	// public static void run() {
-	// System.out.println("hello");
-	// System.out.println("arnold");
-	//
-	// ref = new Firebase("https://cloudfinal.firebaseio.com");
-	// ref.authWithPassword("arnold.lee.wt@gmail.com", "1234567", new AuthResultHandler() {
-	//
-	// @Override
-	// public void onAuthenticationError(FirebaseError arg0) {
-	// System.out.println(arg0);
-	// }
-	//
-	// @Override
-	// public void onAuthenticated(AuthData arg0) {
-	// System.out.println("authenticated");
-	// runMyStuff();
-	//
-	// }
-	// });
-	//
-	// try {
-	// Thread.sleep(5000);
-	// } catch (InterruptedException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// System.out.println("done");
-	// }
+	public static void run() {
+		System.out.println("hello");
+		System.out.println("arnold");
+
+		ref = new Firebase("https://cloudfinal.firebaseio.com");
+		ref.authWithPassword("arnold.lee.wt@gmail.com", "1234567", new AuthResultHandler() {
+
+			@Override
+			public void onAuthenticationError(FirebaseError arg0) {
+				System.out.println(arg0);
+			}
+
+			@Override
+			public void onAuthenticated(AuthData arg0) {
+				System.out.println("authenticated");
+				runMyStuff();
+
+			}
+		});
+
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("done");
+	}
 
 	public static void main(String[] args) {
 
@@ -87,8 +87,42 @@ public class ConnectToFireBase {
 		return word;
 	}
 
+	public static void checkWord(String word){
+		GetNewWord getNewWord = new GetNewWord();
+		Word tempWord = getNewWord.getWord(word);
+		if(tempWord.getDefinition()!=null){
+			run2(word);
+		}
+	}
+	
+	public static void run2(final String word){
+		ref = new Firebase("https://cloudfinal.firebaseio.com");
+		ref.authWithPassword("arnold.lee.wt@gmail.com", "1234567", new AuthResultHandler() {
+
+			@Override
+			public void onAuthenticationError(FirebaseError arg0) {
+				System.out.println(arg0);
+			}
+
+			@Override
+			public void onAuthenticated(AuthData arg0) {
+				System.out.println("authenticated");
+				Map<String, Object> newWord = new HashMap<String,Object>();
+				newWord.put(word,word);
+				ref.child("/words").updateChildren(newWord);
+			}
+		});
+
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public static Word runMyStuff() {
-		
+
 		// TODO: THE CODE THAT YOU NEED HERE.......
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("angelia", "24");

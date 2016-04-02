@@ -1,30 +1,31 @@
 package servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import com.google.gson.Gson;
 
 import cloud_final.ConnectToFireBase;
-import cloud_final.Word;
 
 /**
- * Servlet implementation class getWordServlet
+ * Servlet implementation class AddWrongWordServlet
  */
-@WebServlet("/getWordServlet")
-public class getWordServlet extends HttpServlet {
+@WebServlet("/AddWrongWordServlet")
+public class AddWrongWordServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public getWordServlet() {
+    public AddWrongWordServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -34,7 +35,7 @@ public class getWordServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doPost(request,response);
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -42,28 +43,22 @@ public class getWordServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		ConnectToFireBase connectToFireBase = new ConnectToFireBase();
-//		connectToFireBase.run();
-		Word word = connectToFireBase.getWord();
-		boolean exception = true;
-		while(exception){
-			try{
-			connectToFireBase.run();
-			word = connectToFireBase.getWord();
-			String def = word.getDefinition();
-			exception = false;
-			}catch(Exception e){
-				
-			}
+		Gson gson = new Gson();
+		JSONObject returnJson = new JSONObject();
+
+		try {
+
+			JSONParser parser = new JSONParser();
+			JSONObject data = (JSONObject) parser.parse(request.getReader());
+			System.out.println(gson.toJson(data));
+
+			String word = (String) data.get("word");
+			System.out.println("word: " + word);		
+			ConnectToFireBase connectToFireBase = new ConnectToFireBase();
+			connectToFireBase.checkWord(word);
+		}catch (Exception e) {
+			e.printStackTrace();// TODO: handle exception
 		}
-			
-		PrintWriter out = response.getWriter();
-		JSONObject obj = new JSONObject();
-		obj.put("wordName", word.getName());
-		obj.put("definition", word.getDefinition());
-		out.print(obj);
-		
-		
 	}
-	
+
 }
