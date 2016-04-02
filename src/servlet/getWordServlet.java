@@ -43,9 +43,12 @@ public class getWordServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		ConnectToFireBase connectToFireBase = new ConnectToFireBase();
-		connectToFireBase.run();
-		Word word = connectToFireBase.getWord();
+		System.out.println("Helloooooooooooo");
+		Word word = new Word();
+		word.setName("hello");
+		word.setDefinition("used as a greeting or to begin a telephone conversation.");
 		boolean exception = true;
+		System.out.println("Helloooooooooooo");
 		while(exception){
 			try{
 			connectToFireBase.run();

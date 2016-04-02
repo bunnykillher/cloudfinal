@@ -2,6 +2,7 @@ package cloud_final;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import javax.annotation.processing.Completion;
@@ -146,7 +147,14 @@ public class ConnectToFireBase {
 			public void onDataChange(DataSnapshot arg0) {
 				// TODO Auto-generated method stub
 				System.out.println(arg0.getValue());
-				ArrayList<String> stringValues = (ArrayList<String>) arg0.getValue();
+				HashMap hash = (HashMap)arg0.getValue();
+				Iterator iter =hash.keySet().iterator();
+				ArrayList<String> stringValues = new ArrayList<String>();
+				while(iter.hasNext()){
+					String string = (String)hash.get(iter.next());
+					stringValues.add(string);
+				}
+				
 				Random rand = new Random();
 				s1 = stringValues.get(rand.nextInt(stringValues.size() - 1) + 1);
 				word = getNewWord.getWordDef(s1);
