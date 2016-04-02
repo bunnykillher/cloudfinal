@@ -45,7 +45,11 @@ public class getWordServlet extends HttpServlet {
 		ConnectToFireBase connectToFireBase = new ConnectToFireBase();
 		connectToFireBase.run();
 		Word word = connectToFireBase.getWord();
-		System.out.println(word.getDefinition());
+		while(word.getDefinition()==null){
+			connectToFireBase.run();
+			word = connectToFireBase.getWord();
+		}
+			
 		PrintWriter out = response.getWriter();
 		JSONObject obj = new JSONObject();
 		obj.put("wordName", word.getName());
