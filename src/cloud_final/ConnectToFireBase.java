@@ -88,15 +88,15 @@ public class ConnectToFireBase {
 		return word;
 	}
 
-	public static void checkWord(String word){
+	public static void checkWord(String word) {
 		GetNewWord getNewWord = new GetNewWord();
 		Word tempWord = getNewWord.getWord(word);
-		if(tempWord.getDefinition()!=null){
+		if (tempWord.getDefinition() != null) {
 			run2(word);
 		}
 	}
-	
-	public static void run2(final String word){
+
+	public static void run2(final String word) {
 		ref = new Firebase("https://cloudfinal.firebaseio.com");
 		ref.authWithPassword("arnold.lee.wt@gmail.com", "1234567", new AuthResultHandler() {
 
@@ -108,8 +108,8 @@ public class ConnectToFireBase {
 			@Override
 			public void onAuthenticated(AuthData arg0) {
 				System.out.println("authenticated");
-				Map<String, Object> newWord = new HashMap<String,Object>();
-				newWord.put(word,word);
+				Map<String, Object> newWord = new HashMap<String, Object>();
+				newWord.put(word, word);
 				ref.child("/words").updateChildren(newWord);
 			}
 		});
@@ -120,20 +120,23 @@ public class ConnectToFireBase {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	public static Word runMyStuff() {
 
 		// TODO: THE CODE THAT YOU NEED HERE.......
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("angelia", "24");
-		map.put("lx", "25");
+		map.put("angelia", Math.random());
+		map.put("lx", Math.random());
+		map.put("bh", Math.random());
+		map.put("sn", Math.random());
+		map.put("cc", Math.random());
+		map.put("al", Math.random());
 
-		ref.child("piggy").setValue("hello from eclipse");
+		// ref.child("piggy").setValue("hello from eclipse");
 		// ref.child("chris").setValue("chris sucks");
 		// ref.child("arnold").setValue("sucks too");
 
-		ref.child("ages").updateChildren(map);
+		ref.child("from eclipse").updateChildren(map);
 		// TODO: THE CODE THAT YOU NEED UNTIL HERE.......
 
 		Query q = ref.child("/words");
@@ -147,14 +150,14 @@ public class ConnectToFireBase {
 			public void onDataChange(DataSnapshot arg0) {
 				// TODO Auto-generated method stub
 				System.out.println(arg0.getValue());
-				HashMap hash = (HashMap)arg0.getValue();
-				Iterator iter =hash.keySet().iterator();
+				HashMap hash = (HashMap) arg0.getValue();
+				Iterator iter = hash.keySet().iterator();
 				ArrayList<String> stringValues = new ArrayList<String>();
-				while(iter.hasNext()){
-					String string = (String)hash.get(iter.next());
+				while (iter.hasNext()) {
+					String string = (String) hash.get(iter.next());
 					stringValues.add(string);
 				}
-				
+
 				Random rand = new Random();
 				s1 = stringValues.get(rand.nextInt(stringValues.size() - 1) + 1);
 				word = getNewWord.getWordDef(s1);
