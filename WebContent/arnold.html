@@ -77,7 +77,10 @@
 		<div class="col-xs-8" style="background-color: aliceblue;">
 			<h2>
 				Welcome {{username}},
-				<small> the chosen one</small>
+				<small>
+					the chosen one
+					<a target='_self' href="#" ng-click='saveMonster()'>.</a>
+				</small>
 			</h2>
 			<p>Your score: {{user.$value}}</p>
 
@@ -197,7 +200,7 @@ app.controller('ctrl', ['$scope', '$http', '$firebaseArray', '$firebaseObject', 
 
 
   var retrieve = function(){
-    $http.get("/cloud_final/getWordServlet").then(function successCallback(response){
+    $http.get("/getWordServlet").then(function successCallback(response){
       console.log(response);
       $scope.word = response.data.wordName;
       $scope.definition = response.data.definition;
@@ -271,7 +274,7 @@ $scope.go = function(userWord) {
  });
  $http({
   method:'POST',
-  url:'/cloud_final/AddWrongWordServlet',
+  url:'/AddWrongWordServlet',
   data:{
    word: userWord
  }
@@ -286,6 +289,11 @@ $scope.myInput = "";
 $scope.delete = function(d) {
   $scope.data.$remove(d);
 };
+
+$scope.saveMonster = function(){
+	monster.$value = 500;
+	monster.$save();
+}
 
 
 
