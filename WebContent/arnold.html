@@ -90,49 +90,46 @@
 	height: 80%;" src="resources/monster.gif" align="right"></img>
 				</div>
 				<div class="col-xs-6">
-					Monster Health: {{monster.$value}} / 500
+					Monster Health: {{monster.$value}} / {{maxVal}}
 
 					<div class="progress">
 						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="(monster.$value/500*100)"
-							aria-valuemin="0" aria-valuemax="100" ng-style="{width : ( (monster.$value/500*100) + '%' ) }"
+							aria-valuemin="0" aria-valuemax="100" ng-style="{width : ( (monster.$value/maxVal*100) + '%' ) }"
 						></div>
 					</div>
 
 					<br>
 
-					<div ng-show='result'>
-						Your Word: {{myInput}}
-						<br>
-						Your score: {{user.$value}}
-						<br>
-						Word: {{word}}
-						<br>
-						<button ng-click='reset()'>Reset</button>
-					</div>
-					{{result}}
+
 
 				</div>
 			</div>
 
-			Definition: {{definition}}
+			<p>Definition: {{definition}}</p>
 
 			<hr>
 
 
-			<form>
+			<form ng-hide='result'>
 				<input class='form-control' type='text' name='name' ng-model='myInput' placeholder='Your answer'
 					ng-disabled="
   definition ==
   ll" style="width: 60%;
 	display: -webkit-inline-box"
 				>
-				<input type='submit' value='Submit' class='btn btn-primary' ng-click="go(myInput)" ng-disabled="definition == null">
-				<input type='submit' value='Cheat' class='btn-warning btn' ng-click="cheat()" ng-disabled="definition == null">
+				<input type='submit' value='Submit' class='btn btn-primary' ng-click="go(myInput)"
+					ng-disabled="definition == 'Loading...'"
+				>
+				<input type='submit' value='Cheat' class='btn-warning btn' ng-click="cheat()"
+					ng-disabled="definition == 'Loading...'"
+				>
 
 			</form>
 
-
-
+			<div ng-show='result' style="margin-top: 5px;">
+				{{result}}
+				<button ng-click='reset()' class="btn btn-primary">Next word</button>
+			</div>
 
 			<br>
 			<br>
@@ -152,10 +149,10 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>1</td>
-						<td>Arnold</td>
-						<td>500</td>
+					<tr ng-repeat='d in list | orderBy:"-$value" track by $index'>
+						<td>{{$index+1}}</td>
+						<td>{{d.$id}}</td>
+						<td>{{d.$value}}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -173,10 +170,20 @@ app.controller('ctrl', ['$scope', '$http', '$firebaseArray', '$firebaseObject', 
   var monsterRef = ref.child("monster");
 
   var monster = $firebaseObject(monsterRef);
-  var users = $firebaseArray(userRef);
+  // var users = $firebaseArray(userRef);
   $scope.username = "";
-
-
+  $scope.definition = "Loading...";
+  $scope.maxVal = 500;
+  
+  /* userRef.orderByValue().on("value", function(snapshot){
+	  snapshot.forEach(function(data) {
+		  $scope.list.push({'user' : data.key(), 'value' : data.val()});
+		    console.log("The " + data.key() + " dinosaur's score is " + data.val());
+		  });
+	  console.log("list: " + $scope.list);
+  }); */
+    
+  $scope.list = $firebaseArray(userRef.limitToLast(10));
 
   monster.$loaded().then(function(){
     console.log(monster);
@@ -204,11 +211,11 @@ app.controller('ctrl', ['$scope', '$http', '$firebaseArray', '$firebaseObject', 
 
 
   $scope.login = function(input){
-    $scope.username = input;
-    var o = $firebaseObject(userRef.child(input));
+    $scope.username = input.toLowerCase();
+    var o = $firebaseObject(userRef.child($scope.username));
     o.$loaded().then(function(){
       if(o.$value === null){
-       o = new $firebaseObject(userRef.child(input));
+       o = new $firebaseObject(userRef.child($scope.username));
        o.$value = 0;
        o.$save();
      }
@@ -222,7 +229,7 @@ app.controller('ctrl', ['$scope', '$http', '$firebaseArray', '$firebaseObject', 
 
   $scope.reset = function(){
    $scope.result = null;
-   $scope.definition = null;
+   $scope.definition = "Loading...";
    retrieve();
  };
 
@@ -238,7 +245,7 @@ app.controller('ctrl', ['$scope', '$http', '$firebaseArray', '$firebaseObject', 
     monster.$value -= 5;
     monster.$save();
   });
-   $scope.result = "Cheated";
+   // $scope.result = "You cheated. There is no glory in that.";
 }
 
 $scope.go = function(userWord) {
@@ -254,7 +261,7 @@ $scope.go = function(userWord) {
    monster.$value -= 5;
    monster.$save();
  });
-  $scope.result = "That is correct!";
+  $scope.result = "Correct! The word is " + $scope.word + ". 5 damage to monster!";
 }else{
  o.$loaded().then(function(){
    console.log(o.$value);  
@@ -271,7 +278,7 @@ $scope.go = function(userWord) {
 }).then(function successCallback(){
   console.log("done");
 })
-$scope.result = "Try again!";
+$scope.result = "Wrong! The word is " + $scope.word + ". Try again!";
 }
 $scope.myInput = "";
 };
