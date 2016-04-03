@@ -178,13 +178,6 @@ app.controller('ctrl', ['$scope', '$http', '$firebaseArray', '$firebaseObject', 
   $scope.definition = "Loading...";
   $scope.maxVal = 500;
   
-  /* userRef.orderByValue().on("value", function(snapshot){
-	  snapshot.forEach(function(data) {
-		  $scope.list.push({'user' : data.key(), 'value' : data.val()});
-		    console.log("The " + data.key() + " dinosaur's score is " + data.val());
-		  });
-	  console.log("list: " + $scope.list);
-  }); */
     
   $scope.list = $firebaseArray(userRef.limitToLast(10));
 
