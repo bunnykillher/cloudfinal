@@ -91,7 +91,8 @@ public class ConnectToFireBase {
 	public static void checkWord(String word){
 		GetNewWord getNewWord = new GetNewWord();
 		Word tempWord = getNewWord.getWord(word);
-		if(tempWord.getDefinition()!=null || !tempWord.getDefinition().trim().equals("")){
+		System.out.println("{lol" + tempWord.getDefinition()+"}");
+		if(tempWord.getDefinition()!=null && tempWord.getDefinition().length()>6){
 			run2(word);
 		}
 	}
