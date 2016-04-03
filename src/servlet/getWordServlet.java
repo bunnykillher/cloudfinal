@@ -53,6 +53,7 @@ public class getWordServlet extends HttpServlet {
 			try{
 			connectToFireBase.run();
 			word = connectToFireBase.getWord();
+			System.out.println(word.getName()+ "  HERE   " + word.getDefinition());
 			String def = word.getDefinition();
 			exception = false;
 			}catch(Exception e){

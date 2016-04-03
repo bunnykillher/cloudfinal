@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
 
 public class GetNewWord {
 	public static void main(String[] args) {
-		Word word = getWord("Concubine");
+		Word word = getWord("wife");
 		System.out.println("yay "+ word.getName()  + word.getDefinition());
 
 	}
