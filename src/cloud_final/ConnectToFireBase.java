@@ -33,12 +33,14 @@ public class ConnectToFireBase {
 
 			@Override
 			public void onAuthenticationError(FirebaseError arg0) {
+				System.out.println("ERROR");
 				System.out.println(arg0);
+				run(); 
 			}
 
 			@Override
 			public void onAuthenticated(AuthData arg0) {
-				System.out.println("authenticated");
+				System.out.println("authenticatedPros");
 				runMyStuff();
 
 			}
@@ -68,7 +70,7 @@ public class ConnectToFireBase {
 
 			@Override
 			public void onAuthenticated(AuthData arg0) {
-				System.out.println("authenticated");
+				System.out.println("authenticatedPROPER");
 				runMyStuff();
 			}
 		});
@@ -103,6 +105,7 @@ public class ConnectToFireBase {
 			@Override
 			public void onAuthenticationError(FirebaseError arg0) {
 				System.out.println(arg0);
+				run2(word);
 			}
 
 			@Override
